@@ -1,0 +1,152 @@
+DATA SEGMENT
+    van1 db 'Selamat datang di Perpustakaan!', 0Dh, 0Ah, '$'
+    nama db 0dh, 0ah,'Masukkan Nama Anda: ', '$'
+    tampung_nama db 20, ?, 20 dup('$')
+    id db 0dh, 0ah,'Masukkan ID Anda: ', '$'
+    tampung_id db 20, ?, 20 dup('$')
+    van2 db 0dh, 0ah,'Pilih Menu Peminjaman Buku:', 0Dh, 0Ah, '$'
+    van3 db '1. Buku Dasar Sistem Komputer', 0Dh, 0Ah, '2. Buku Dasar-Dasar Pemrograman', 0Dh, 0Ah, '3. Buku Manajemen Data Informasi', 0Dh, 0Ah, '4. Buku Logika Informatika', 0Dh, 0Ah, '$'
+    van4 db 0dh, 0ah, 'Buku yang Anda pinjam: ', '$'
+    
+    buku1 db 'Buku Dasar Sistem Komputer', 0Dh, 0Ah, '$'
+    buku2 db 'Buku Dasar-Dasar Pemrograman', 0Dh, 0Ah, '$'
+    buku3 db 'Buku Manajemen Data Informasi', 0Dh, 0Ah, '$'
+    buku4 db 'Buku Logika Informatika', 0Dh, 0Ah, '$'      
+    van5 db 'Terima kasih, program selesai.', 0Dh, 0Ah, '$'
+    van6 db 'Apakah ingin memilih lagi? (Y/N): ', '$'
+    error db 'Input tidak valid. Coba lagi.', 0Dh, 0Ah, '$'
+    van7 db 'Program telah selesai. Sampai jumpa!', 0Dh, 0Ah, '$'
+DATA ENDS
+
+CODE SEGMENT
+ASSUME CS:CODE, DS:DATA
+
+START:
+    ; Inisialisasi Data Segment
+    MOV AX, DATA
+    MOV DS, AX
+
+    ; Tampilkan ucapan selamat datang
+    MOV AH, 09H
+    LEA DX, van1
+    INT 21H
+
+    ; Memasukkan nama
+    MOV AH, 09H
+    LEA DX, nama
+    INT 21H
+    MOV AH, 0AH
+    LEA DX, tampung_nama
+    INT 21H
+
+    ; Memasukkan ID
+    MOV AH, 09H
+    LEA DX, id
+    INT 21H
+    MOV AH, 0AH
+    LEA DX, tampung_id
+    INT 21H
+
+MULAI:
+    ; Tampilkan menu
+    MOV AH, 09H
+    LEA DX, van2
+    INT 21H
+
+    MOV AH, 09H
+    LEA DX, van3
+    INT 21H
+
+    ; Pilih proses
+    MOV AH, 01H
+    INT 21H
+    CMP AL, '1'
+    JE PILIHAN_1
+    CMP AL, '2'
+    JE PILIHAN_2
+    CMP AL, '3'
+    JE PILIHAN_3
+    CMP AL, '4'
+    JE PILIHAN_4
+    JMP PSN_ERROR
+
+PILIHAN_1:
+    MOV AH, 09H
+    LEA DX, van4
+    INT 21H
+    MOV AH, 09H
+    LEA DX, buku1
+    INT 21H
+    JMP PROSES_LAGI
+
+PILIHAN_2:
+    MOV AH, 09H
+    LEA DX, van4
+    INT 21H
+    MOV AH, 09H
+    LEA DX, buku2
+    INT 21H
+    JMP PROSES_LAGI
+
+PILIHAN_3:
+    MOV AH, 09H
+    LEA DX, van4
+    INT 21H
+    MOV AH, 09H
+    LEA DX, buku3
+    INT 21H
+    JMP PROSES_LAGI
+
+PILIHAN_4:
+    MOV AH, 09H
+    LEA DX, van4
+    INT 21H
+    MOV AH, 09H
+    LEA DX, buku4
+    INT 21H
+    JMP PROSES_LAGI  
+                    
+
+    
+
+
+PROSES_LAGI:
+    MOV AH, 09H
+    LEA DX, van6
+    INT 21H
+
+    MOV AH, 01H
+    INT 21H
+    CMP AL, 'Y'
+    JE MULAI
+    CMP AL, 'y'
+    JE MULAI
+    CMP AL, 'N'
+    JE SELESAI
+    CMP AL, 'n'
+    JE SELESAI
+    JMP PSN_ERROR 
+
+    
+
+
+PSN_ERROR:
+    MOV AH, 09H
+    LEA DX, error
+    INT 21H
+    JMP MULAI
+
+SELESAI:
+    MOV AH, 09H
+    LEA DX, van5
+    INT 21H
+
+    MOV AH, 09H
+    LEA DX, van7
+    INT 21H
+    MOV AH, 4CH
+    INT 21H
+CODE ENDS
+
+END START
+
